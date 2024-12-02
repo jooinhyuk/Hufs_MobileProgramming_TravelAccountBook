@@ -4,42 +4,39 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RadioGroup
-import androidx.fragment.app.Fragment
 import android.widget.Toast
-import com.mobileProgramming.travelaccountbook.R
+import androidx.fragment.app.Fragment
+import com.mobileProgramming.travelaccountbook.databinding.FragmentSignUpBinding
 
 class SignUp : Fragment() {
+
+    private var _binding: FragmentSignUpBinding? = null
+    private val binding get() = _binding!! // Null 안전성을 위한 getter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_sign_up, container, false)
+        // 데이터 바인딩 객체 초기화
+        _binding = FragmentSignUpBinding.inflate(inflater, container, false)
+        return binding.root // 바인딩 객체의 root 반환
+    }
 
-        val etName = view.findViewById<EditText>(R.id.et_name)
-        val etId = view.findViewById<EditText>(R.id.et_id)
-        val etPassword = view.findViewById<EditText>(R.id.et_password)
-        val etPasswordConfirm = view.findViewById<EditText>(R.id.et_password_confirm)
-        val rgGender = view.findViewById<RadioGroup>(R.id.rg_gender)
-        val etAge = view.findViewById<EditText>(R.id.et_age)
-        val etEmail = view.findViewById<EditText>(R.id.et_email)
-        val btnSignup = view.findViewById<Button>(R.id.btn_signup)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        btnSignup.setOnClickListener {
-            val name = etName.text.toString()
-            val id = etId.text.toString()
-            val password = etPassword.text.toString()
-            val passwordConfirm = etPasswordConfirm.text.toString()
-            val age = etAge.text.toString()
-            val email = etEmail.text.toString()
+        // 버튼 클릭 이벤트 설정
+        binding.btnSignup.setOnClickListener {
+            val name = binding.etName.text.toString()
+            val id = binding.etId.text.toString()
+            val password = binding.etPassword.text.toString()
+            val passwordConfirm = binding.etPasswordConfirm.text.toString()
+            val age = binding.etAge.text.toString()
+            val email = binding.etEmail.text.toString()
 
-            val gender = when (rgGender.checkedRadioButtonId) {
-                R.id.rb_male -> "남자"
-                R.id.rb_female -> "여자"
+            val gender = when (binding.rgGender.checkedRadioButtonId) {
+                binding.rbMale.id -> "남자"
+                binding.rbFemale.id -> "여자"
                 else -> ""
             }
 
@@ -54,7 +51,11 @@ class SignUp : Fragment() {
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
 
-        return view
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // 뷰가 파괴되면 바인딩 객체 해제
+        _binding = null
     }
 }
