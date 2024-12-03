@@ -5,52 +5,71 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.app.AlertDialog
 
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginFragment : Fragment() {
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var editTextId: EditText
+    private lateinit var editTextPw: EditText
+    private lateinit var countrySelectTextView: TextView
+    private lateinit var buttonLogin: Button
+    private lateinit var textViewSignup: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false)
+        val view = inflater.inflate(R.layout.fragment_login, container, false)
+
+        editTextId = view.findViewById(R.id.editTextId)
+        editTextPw = view.findViewById(R.id.editTextPw)
+        countrySelectTextView = view.findViewById(R.id.textViewCountrySelect)
+        buttonLogin = view.findViewById(R.id.buttonLogin)
+        textViewSignup = view.findViewById(R.id.textViewSignup)
+
+        // 국가 선택 드롭다운 메뉴 설정
+        val countryList = arrayOf("대한민국", "미국", "일본", "중국", "유럽연합")
+        countrySelectTextView.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("국가 선택")
+                .setItems(countryList) { _, which ->
+                    countrySelectTextView.text = countryList[which]
+                }
+                .show()
+
+        }
+
+        buttonLogin.setOnClickListener {
+            val enteredId = editTextId.text.toString()
+            val enteredPw = editTextPw.text.toString()
+            val selectedCountry = countrySelectTextView.text.toString()
+
+            // 비밀번호 확인 => 하단에 DB랑 통신하는 메서드 정의해놨어용
+            val isPasswordCorrect = checkPasswordWithBackend(enteredId, enteredPw)
+            if (isPasswordCorrect) {
+                // 로그인 성공
+
+            } else {
+                // 로그인 실패 시 초기화면으로
+                editTextId.text.clear()
+                editTextPw.text.clear()
+                countrySelectTextView.text = context?.getString(R.string.country_select)
+            }
+        }
+
+        // 회원가입 텍스트 클릭 이벤트 임시 함수
+        textViewSignup.setOnClickListener {
+
+        }
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LoginFragment.
-         */
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LoginFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    // 비밀번호 확인 임시 함수 = 백엔드 나오면 수정 예정
+    private fun checkPasswordWithBackend(id: String, password: String): Boolean {
+        return false
     }
 }

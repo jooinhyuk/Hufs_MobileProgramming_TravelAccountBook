@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">Travel Account Book</string>
     <string name="hint_id">ID</string>
     <string name="hint_pw">PW</string>
     <string name="country_select">▼국가 선택</string>
